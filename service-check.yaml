@@ -1,0 +1,13 @@
+---
+- hosts: servers
+  become: no
+  gather_facts: yes
+  tasks:
+  - name: Populate the service facts
+    service_facts:
+  - name: See the service facts
+    debug: 
+      msg: "{{ansible_facts.services['nginx.service'].state}}"
+  - name: see td-agent is running
+    debug:
+      msg: "{{ansible_facts.services['td-agent.service'].state}}"
