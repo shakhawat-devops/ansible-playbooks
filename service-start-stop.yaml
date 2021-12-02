@@ -1,0 +1,54 @@
+---
+- hosts: servers
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: start the services
+    service: 
+      name: "{{ item }}"
+      state: started
+    with_items:
+    - docker
+    - php-fpm
+    - nginx
+    - keepalived
+    - td-agent
+    tags:
+    - start
+  - name: enable the services on boot
+    service: 
+      name: "{{ item }}"
+      enabled: yes
+    with_items:
+    - docker
+    - php-fpm
+    - nginx
+    - keepalived
+    - td-agent
+    tags: start
+
+  - name: stop the services
+    service:
+      name: "{{ item }}"
+      state: stopped
+    with_items:
+    - docker
+    - php-fpm
+    - nginx
+    - keepalived
+    - td-agent
+    tags: 
+    - stop
+
+  - name: disable the services on boot
+    service:
+      name: "{{ item }}"
+      enabled: no
+    with_items:
+    - docker
+    - php-fpm
+    - nginx
+    - keepalived
+    - td-agent
+    tags:
+    - stop
