@@ -1,0 +1,51 @@
+--- 
+- hosts: servers
+  become: yes
+  tasks: 
+  - name: Install Docker SDK for python
+    pip: name=docker state=present
+    tags:
+    - prereq
+  
+  - name: create some containers
+    docker_container:
+      name: redis
+      image: redis
+    tags:
+    - create
+
+  - name: create a httpd container
+    docker_container:
+      name: httpd
+      image: httpd 
+    tags:
+    - create
+
+  - name: start httpd container
+    docker_container:
+      name: httpd
+      state: started
+    tags:
+    - start
+
+  - name: Start redis container
+    docker_container:
+      name: redis
+      state: started
+    tags:
+    - start
+
+  - name: Stop httpd container
+    docker_container:
+      name: httpd
+      state: stopped
+    tags:
+    - stop
+
+  - name: Stop redis container
+    docker_container:
+      name: redis
+      state: stopped
+    tags:
+    - stop
+
