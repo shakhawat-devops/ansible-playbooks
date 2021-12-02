@@ -1,0 +1,58 @@
+---
+- hosts: servers
+  become: yes
+  gather_facts: no
+  tasks:
+
+  - name: Remove docker if installed from CentOS repo
+    yum:
+         name: "{{ item }}"
+         state: removed
+
+    with_items:
+     - docker
+     - docker-client
+     - docker-client-latest
+     - docker-common
+     - docker-latest
+     - docker-latest-logrotate
+     - docker-logrotate
+     - docker-engine
+     - podman
+     - buildah
+     - containerd.io
+
+  - name: Install yum utils
+    yum:
+        name: "{{ item }}"
+        state: latest
+    with_items:
+     - yum-utils
+     - device-mapper-persistent-data
+     - lvm2
+
+  - name: Add Docker repo
+    get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+
+ #### Something it is missing here ####
+
+  - name: Install Docker
+    dnf:
+      name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+
+  - name: Start Docker service
+    service:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: Add user shakhawat to docker group
+    user:
+        name: shakhawat
+        groups: docker
+        append: yes
